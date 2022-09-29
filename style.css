@@ -23,7 +23,7 @@ body {
 }
 
 .display {
-
+    height: 100px;
     display: flex;
     flex-direction: column;
     gap: 1rem;
