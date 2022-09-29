@@ -22,7 +22,7 @@ function operate(operator, num1, num2) {
             return add(num1, num2);
         case "-":
             return subtract(num1, num2);
-        case "*":
+        case "x":
             return multiply(num1, num2);
         case "/":
             return divide(num1, num2);
@@ -54,12 +54,14 @@ function displayOperation() {
         operator.addEventListener("click", (e) => {
             if (e.target.textContent === "=") return;
             else {
-                operationDisplay.textContent += resultDisplay.textContent + e.target.textContent;
+            
+                operationDisplay.textContent = resultDisplay.textContent + e.target.textContent;
                 resultDisplay.textContent = "";
+                
             }
             
-            
         });
+        
     });
 }
 
@@ -69,6 +71,26 @@ displayOperation();
 function calculateResult() {
     const resultDisplay = document.querySelector(".result");
     const operationDisplay = document.querySelector(".operation-display");
-    
+
+    let expression = operationDisplay.textContent + resultDisplay.textContent;
+    let copy = expression;
+
+    expression = expression.replace(/[0-9]+/g, "#").replace(/[\(|\|\.)]/g, "");
+    const numbers = copy.split(/[^0-9\.]+/);
+    const operators = expression.split("#").filter(function(n){return n});
+    const result = [];
+
+    for(i = 0; i < numbers.length; i++){
+         result.push(numbers[i]);
+         if (i < operators.length) result.push(operators[i]);
+    }
+
+    console.log(result);
+    operationDisplay.textContent += resultDisplay.textContent;
+    resultDisplay.textContent = `${operate(result[1], +result[0], +result[2])}`;
+    // console.log(operate(result[1], +result[0], +result[2]));
 }
+
+const equalKey = document.querySelector("#equal");
+equalKey.addEventListener("click", calculateResult);
 
