@@ -1,3 +1,8 @@
+// global variables
+const resultDisplay = document.querySelector(".result");
+const operationDisplay = document.querySelector(".operation-display");
+
+
 // operation functions
 function add(a, b) {
     return a + b;
@@ -31,7 +36,6 @@ function operate(operator, num1, num2) {
 
 // populate display functions
 function displayDigits() {
-    const resultDisplay = document.querySelector(".result");
     const digits = Array.from(document.querySelectorAll(".digit"));
 
     digits.forEach(digit => {
@@ -40,25 +44,28 @@ function displayDigits() {
             resultDisplay.textContent += text;
         });
     });
-    // return resultDisplay.textContent;
 }
 
 displayDigits();
 
 function displayOperation() {
-    const resultDisplay = document.querySelector(".result");
-    const operationDisplay = document.querySelector(".operation-display");
     const operators = Array.from(document.querySelectorAll(".operator"));
-
+    var counter = 0;
     operators.forEach( operator => {
         operator.addEventListener("click", (e) => {
-            if (e.target.textContent === "=") return;
-            else {
             
+            if (counter === 1) {
+                console.log("entered")
+                operationDisplay.textContent += resultDisplay.textContent;
+                resultDisplay.textContent = calculateResult(operationDisplay.textContent);
+                counter = 0;
+            }
+            else {
                 operationDisplay.textContent = resultDisplay.textContent + e.target.textContent;
                 resultDisplay.textContent = "";
-                
+                counter++;
             }
+                
             
         });
         
@@ -68,11 +75,8 @@ function displayOperation() {
 displayOperation();
 
 
-function calculateResult() {
-    const resultDisplay = document.querySelector(".result");
-    const operationDisplay = document.querySelector(".operation-display");
-
-    let expression = operationDisplay.textContent + resultDisplay.textContent;
+function calculateResult(operationString) {
+    let expression = operationString;
     let copy = expression;
 
     expression = expression.replace(/[0-9]+/g, "#").replace(/[\(|\|\.)]/g, "");
@@ -86,11 +90,8 @@ function calculateResult() {
     }
 
     console.log(result);
-    operationDisplay.textContent += resultDisplay.textContent;
-    resultDisplay.textContent = `${operate(result[1], +result[0], +result[2])}`;
-    // console.log(operate(result[1], +result[0], +result[2]));
+    
+    return `${operate(result[1], +result[0], +result[2])}`;
+    
 }
-
-const equalKey = document.querySelector("#equal");
-equalKey.addEventListener("click", calculateResult);
 
