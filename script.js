@@ -1,6 +1,12 @@
 // global variables
 const resultDisplay = document.querySelector(".result");
 const operationDisplay = document.querySelector(".operation-display");
+const operationButtons = Array.from(document.querySelectorAll(".btn"));
+resultDisplay.textContent = "0";
+let firstOperand;
+let secondOperand;
+let operator;
+
 
 
 // operation functions
@@ -34,98 +40,101 @@ function operate(operator, num1, num2) {
     }
 }
 
-// populate display functions
-function displayDigits() {
-    const digits = Array.from(document.querySelectorAll(".digit"));
 
-    digits.forEach(digit => { //add digits to display
-        digit.addEventListener("click", () => {
-            let text = digit.textContent;
-            // resultDisplay.textContent += text;
-            operationDisplay.textContent += text;
-        });
-    });
+
+
+function isOperator(clickedBtn) {
+    switch (clickedBtn.textContent) {
+        case "x":
+            return true;
+        case "/":
+            return true;
+        case "+":
+            return true;
+        case "-":
+            return true;
+        case "=":
+            return true;
+        default:
+            return false;
+    }
 }
 
-displayDigits();
+function isMinus(clickedBtn) {
+    if (clickedBtn.textContent === "-") return true;
+    else return false;
+}
 
-function displayOperation() {
-    // get operators in arrays
-    const operators = Array.from(document.querySelectorAll(".operator"));
-    // counter to count number of operator in operation
-    var counter = 0;
-    operators.forEach( operator => {
-        operator.addEventListener("click", (e) => {
-            // if operator (except equal) is clicked before and clicked again fire calculations 
-            if (e.target.textContent !== "=" && (counter === 1 || isIncludeOperator(operationDisplay.textContent)) &&
-                 getOperationsArray(operationDisplay.textContent)[2] !== "") {
-                console.log("entered")
-                
-                
-                resultDisplay.textContent = calculateResult(getOperationsArray(operationDisplay.textContent));
-                operationDisplay.textContent = resultDisplay.textContent + e.target.textContent;
-                
-                counter = 0;
+function isDigit(clickedBtn) {
+    if (isOperator(clickedBtn)) return false;
+    else return true;
+}
+
+function addFirstDigit(clickedBtn) {
+    if (isMinus(clickedBtn) || isDigit(clickedBtn)) {
+        resultDisplay.textContent = clickedBtn.textContent;
+        // return resultDisplay.textContent;
+    }
+}
+
+function addSecondDigit(clickedBtn) {
+    if (isDigit(clickedBtn)) {
+        resultDisplay.textContent += clickedBtn.textContent;
+    }
+}
+
+function isEqualOperator(clickedBtn) {
+    if (isOperator(clickedBtn)) {
+        if (clickedBtn.textContent === "=") return true;
+        else return false;
+    }
+}
+function run() {
+    operationButtons.forEach(button => {
+        let digitCounter = 0; //track digit additions
+        let operatorCounter = 0; //track operator additions
+        button.addEventListener("click", (e) => {
+            //add first digit or (-)
+            if (digitCounter < 1) {
+                addFirstDigit(e.target);
+                digitCounter++;
+                console.log("entered 1");
             }
-            // if equal was clicked and other operator was click before
-            else if (counter === 1 && e.target.textContent === "=") {
-                console.log("entered =");
-                resultDisplay.textContent = calculateResult(getOperationsArray(operationDisplay.textContent));
-                operationDisplay.textContent = resultDisplay.textContent;
-                counter = 0;
-            }
-            // add operator to display
-            else {
-                console.log("entered else");
-                if (getOperationsArray(operationDisplay.textContent).length === 3 && getOperationsArray(operationDisplay.textContent) !== "") {
-                    resultDisplay.textContent = calculateResult(getOperationsArray(operationDisplay.textContent));
-                    operationDisplay.textContent = resultDisplay.textContent;
-                    counter = 0;
+            // add other digits
+            else if (digitCounter === 1 ) {
+                console.log("entered 2");
+                addSecondDigit(e.target);
+                // if operator except equal was clicked 
+                if (!isEqualOperator(e.target) && isOperator(e.target)) {
+                    operationDisplay.textContent = resultDisplay.textContent + e.target.textContent;
+                    digitCounter = 0;
+                    operatorCounter++;
                 }
-               else {
-                    if (e.target.textContent === "=") return; //prevent addition of equal to display
-                    operationDisplay.textContent += e.target.textContent;
-                    resultDisplay.textContent = "";
-                    counter++; //indicate that operator is clicked
-               }
-                // const array = getOperationsArray(operationDisplay.textContent);
-                // console.log(typeof array[2]);
-                
+                // if equal was clicked
+                else if (isEqualOperator(e.target)) {
+                    operationDisplay.textContent += resultDisplay.textContent + e.target.textContent;
+                    digitCounter = 0;
+                    operatorCounter = 0;
+                    //calculate(operation)
+                }
             }
-                
+            
+
             
         });
-        
     });
-}
-
-displayOperation();
-
-
-// function that transforms string of operation to array
-function getOperationsArray(operationString) {
-    let expression = operationString;
-    let copy = expression;
-
-    expression = expression.replace(/[0-9]+/g, "#").replace(/[\(|\|\.)]/g, "");
-    const numbers = copy.split(/[^0-9\.]+/);
-    const operators = expression.split("#").filter(function(n){return n});
-    const result = [];
-
-    for(i = 0; i < numbers.length; i++){
-         result.push(numbers[i]);
-         if (i < operators.length) result.push(operators[i]);
-    }
-
-    console.log(result);
-    return result;
-    
     
 }
 
-//Do calculations
-function calculateResult(array) {
-    return `${operate(array[1], +array[0], +array[2])}`;
+run();
+
+
+
+function getStringOperator(string) {
+    if (string.includes("x")) return "x";
+    else if (string.includes("/")) return "/";
+    else if (string.includes("+")) return "+";
+    else return "-";
 }
 
 // check if string of operations contains operator
