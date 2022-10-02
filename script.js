@@ -93,6 +93,7 @@ function run() {
     operationButtons.forEach(button => {
         let digitCounter = 0; //track digit additions
         let operatorCounter = 0; //track operator additions
+        let operator;
         button.addEventListener("click", (e) => {
             //add first digit or (-)
             if (digitCounter < 1) {
@@ -106,16 +107,22 @@ function run() {
                 addSecondDigit(e.target);
                 // if operator except equal was clicked 
                 if (!isEqualOperator(e.target) && isOperator(e.target)) {
+                    operator = e.target.textContent;
+                    console.log(operator);
                     operationDisplay.textContent = resultDisplay.textContent + e.target.textContent;
                     digitCounter = 0;
                     operatorCounter++;
                 }
                 // if equal was clicked
                 else if (isEqualOperator(e.target)) {
-                    operationDisplay.textContent += resultDisplay.textContent + e.target.textContent;
+                    operationDisplay.textContent += resultDisplay.textContent /*+ e.target.textContent*/;
+                    //calculate(operation)
+                    const array = operationDisplay.textContent.split(operator);
+                    operationDisplay.textContent += e.target.textContent;
+                    console.log(array);
+                    resultDisplay.textContent = operate(operator, +array[0], +array[1]);
                     digitCounter = 0;
                     operatorCounter = 0;
-                    //calculate(operation)
                 }
             }
             
