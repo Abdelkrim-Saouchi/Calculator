@@ -31,6 +31,14 @@ clearBtn.addEventListener("click", clear);
 const equalBtn = document.querySelector("#equal");
 equalBtn.addEventListener("click", evaluate);
 
+//delete button
+const deleteBtn = document.querySelector("#delete");
+deleteBtn.addEventListener("click", deleteNumber);
+
+//add point
+const point = document.querySelector("#point");
+point.addEventListener("click", addPoint);
+
 //operation functions
 
 function addDigit(number) {
@@ -64,7 +72,7 @@ function evaluate() {
         return;
     }
     secondOperand = resultDisplay.textContent;
-    resultDisplay.textContent = operate(currentOperation, firstOperand, secondOperand);
+    resultDisplay.textContent = roundResult(operate(currentOperation, firstOperand, secondOperand));
     operationDisplay.textContent = `${firstOperand} ${currentOperation} ${secondOperand}`;
     currentOperation = null; //return to first operation
 
@@ -77,6 +85,23 @@ function clear() {
     secondOperand = "";
     currentOperation = null;
 }
+
+function deleteNumber() {
+    resultDisplay.textContent = resultDisplay.textContent.slice(0, -1);
+}
+
+function addPoint() {
+    if (shouldResetResultDisplay) resetResult();
+    if (resultDisplay.textContent === "") {
+        resultDisplay.textContent = "0";
+    }
+    if (resultDisplay.textContent.includes(".")) return;
+    resultDisplay.textContent += ".";
+}
+
+function roundResult(number) {
+    return Math.round(number * 1000) / 1000
+  }
 
 function add(a, b) {
     return a + b;

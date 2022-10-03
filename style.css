@@ -19,7 +19,8 @@ body {
     display: flex;
     flex-direction: column;
     max-width: 300px;
-    /* width: 175px; */
+    background-color:#ffffff;
+    border-radius: 14px;
 }
 
 .display {
@@ -42,7 +43,7 @@ body {
 
 button {
     padding: 18px 32px;
-    margin-left: 8px;
+    margin-left: 12px;
     background-color: #f7f7f7;
     color: #83f9e4;
     border: 0;
@@ -52,7 +53,6 @@ button {
 }
 
 .btn {
-    /* width: 100px; */
     flex: 1;
     display: flex;
     flex-wrap: wrap;
@@ -78,6 +78,14 @@ button {
     background-color: rgb(212, 212, 212);
 }
 
+.btn .operator:hover, #equal:hover {
+    background-color: #f1bebe;
+}
+
 button:hover {
-    background-color: rgb(212, 212, 212);
+    background-color: rgb(177, 233, 173);
+}
+
+h1 {
+    margin-top: 16px;
 }
